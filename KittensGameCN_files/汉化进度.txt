@@ -1,0 +1,20 @@
+基于Max汉化的0.9.3版再次更新汉化
+achievements//成就系统
+buildings//建筑系统
+calendar//日历系统
+core//核心程序
+diplomacy//外交系统  资源显示不正常
+game//主程序系统
+prestige//声望系统
+religion//宗教系统
+resources//资源系统
+science//科研系统
+space//太空系统
+village//村庄系统
+workshop//工坊系统
+
+analytics//解析程序，无需汉化
+jquery.min//组件包，无需汉化
+dojo//组件包，无需汉化
+
+汉化人员：Max，深邃如海，士郎子

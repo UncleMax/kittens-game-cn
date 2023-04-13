@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!-- 加载logo图 -->
+		<link rel="shortcut icon" href="./KittensGameCN_files/favicon.gif" type="image/x-icon">
+
+		<!-- I only use jquery ironically -->
+		<script async="" src="./KittensGameCN_files/analytics.js"></script>
+		<script src="./KittensGameCN_files/jquery.min.js"></script>
+		
+		<script src="./KittensGameCN_files/dojo.js"></script>
+
+		<script src="./KittensGameCN_files/core.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/resources.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/calendar.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/buildings.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/village.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/science.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/workshop.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/diplomacy.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/religion.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/achievements.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/space.js" type="text/javascript"></script>
+		<script src="./KittensGameCN_files/prestige.js" type="text/javascript"></script>
+
+		<script src="./KittensGameCN_files/game.js" type="text/javascript"></script>
+
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','./KittensGameCN_files/analytics.js','ga');
+
+			ga('create', 'UA-29812134-1', 'bloodrizer.ru');
+			ga('send', 'pageview');
+		</script>
+
+		<style type="text/css">
+
+			html, body {
+				font-size: 14px;
+				height: 100%;
+				overflow-y: hidden;
+			}
+
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #FFFFFF;
+			}
+
+			#gamePageContainer {
+				border: 0 none;
+				font: inherit;
+				margin: 0;
+				padding: 0;
+				vertical-align: baseline;
+
+				overflow: auto;
+			}
+
+			#topBar {
+				position:absolute;
+				top: 2px;
+				left: 0px;
+				height: 26px;
+				width: 100%;
+				border-bottom: 1px solid gray;
+
+				box-shadow: 1px 0px 2px #888;
+			}
+
+			#game {
+				position:absolute;
+				bottom: 0;
+				top: 26px;
+
+				width: 100%;
+				min-width: 1280px;
+
+				margin: 0 auto;
+				height: auto;
+				
+				white-space: nowrap;	/* to prevent log column from wrapping */
+			}
+			
+			#game * {
+				white-space: normal;
+			}
+
+			.column {
+				min-height: 100%;
+				height: 100%;
+
+				display: inline-block;
+				margin-top: 4px;
+			}
+
+			#leftColumn {
+				width: 25%;
+				max-width: 400px;
+				padding-right: 20px;
+				overflow-y: scroll;
+				overflow-x: hidden;
+			}
+
+			#midColumn {
+				width: 620px;
+				overflow-y: scroll;
+				overflow-x: hidden;
+			}
+
+			#rightColumn {
+				width: 300px;
+			}
+
+			div#gameLog {
+			}
+
+			#footerLinks {
+				position: absolute;
+				bottom: 10px;
+				right: 5px;
+			}
+
+			.activeTab {
+				text-decoration: none;
+				color: black;
+			}
+
+			.resourceRow {
+				white-space: nowrap;
+			}
+
+			.nosel {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+
+			.btn {
+				border: 1px solid black;
+				padding: 5px;
+				cursor: default;
+				width: 170px;
+				text-align: center;
+				margin-bottom:10px;
+			}
+
+			.btn.bldEnabled div.btnContent {
+				padding: 4px;
+				border: 1px solid green;
+			}
+
+			.btn a:hover {
+				color: orange;
+				text-shadow: 1px 0px 10px coral;
+			}
+
+			.btn .noRes {
+				color: #FF3030;
+			}
+
+			.spacer {
+				border-bottom: 1px solid gray;
+				margin-bottom: 12px;
+			}
+
+			.highlited {
+				background-color: #EEE;
+			}
+
+			.help {
+				position: absolute;
+				border: 1px solid black;
+				width: 600px;
+				height: 300px;
+
+				left: 50%;
+				top: 50%;
+
+				margin-top: -150px;
+				margin-left: -300px;
+
+				background-color: #FFF;
+				padding: 20px;
+			}
+
+			.disabled {
+				color: #999
+			}
+
+			.tipr_content {
+				border: 1px solid black;
+				background-color: #F6F6F6;
+				padding: 3px;
+				margin: 2px;
+			}
+
+			.button_tooltip {
+				background-color: #FFF;
+				color: black;
+				z-index: 9000;
+			}
+
+			.panelContainer {
+				border: 1px solid black;
+				min-height: 30px;
+				margin-top: 8px;
+			}
+
+			.panelContainer .title {
+				padding: 4px;
+				padding-left: 10px;
+			}
+
+			.panelContainer .toggle {
+				border: 1px solid black;
+				margin: 4px;
+				padding-left:  6px;
+				padding-right: 6px;
+				cursor: pointer;
+			}
+
+			.panelContainer .container {
+				padding: 10px;
+			}
+
+			.maxRes {
+				color: #AAA;
+			}
+
+			.achievement {
+				display: block;
+				margin-bottom: 10px;
+				padding: 5px;
+				padding-left: 10px;
+				border: 1px solid gray;
+			}
+
+			.achievement.unethical {
+				border-color: red;
+			}
+
+			td.resLimitNotice {
+				color: orange;
+			}
+
+			td.resLimitWarn {
+				color: coral;
+				opacity: 0.75;
+			}
+
+			.tooltipExt {
+				position: absolute;
+				border: 1px solid gray;
+				padding: 5px;
+				pointer-events: none;
+			}
+
+			.msg {
+				display: inline-block;
+			}
+
+			.msg.type_notice {
+				color: #01A9DB;
+			}
+
+			.msg.type_important {
+				color: coral;
+			}
+
+			#gameContainerId {
+				padding: 10px;
+				padding-top: 10px;
+			}
+
+			.tabsContainer {
+				padding-bottom: 15px;
+			}
+
+			/*What is the point of these 2 rules?*/
+			.tabsContainer .tab {}
+
+			.tabsContainer .activeTab {}
+
+			.bldGroupContainer {
+				padding-top: 15px;
+				border-top: 1px solid gray;
+				margin-top: 10px;
+			}
+
+			.btn.modern {
+				font-family: Helvetica;
+				font-size: 14px;
+				border-radius: 3px;
+				border: 1px solid #888;
+				padding: 0;
+				width: 264px;
+			}
+
+			.modern .btnContent {
+				padding: 10px 0 10px 10px;
+			}
+			.btn.modern a {
+				background-color: #EEE;
+				border-left: 1px solid #888;
+				padding: 10px !important;
+				margin: -10px 0;
+				min-width: 20px;
+				text-decoration: none;
+			}
+
+			.btn.bldEnabled.modern div.btnContent {
+				border-width: 0 0 0 8px;
+				padding: 10px 0px 10px 10px;
+			}
+
+			.btn.modern .linkBreak{
+				display: none;
+			}
+
+			.button_tooltip .noRes, .limited {
+				color: #FF3030;
+			}
+
+			.tabInner {
+				padding: 20px;
+				border: 1px solid gray;
+			}
+
+			table.craftTable tr:hover td {
+				background-color: rgba(155, 200, 155, 0.8);
+			}
+			
+			#devPanel div {
+				display: inline-block;
+			}
+
+	    </style>
+
+		<link rel="stylesheet" href="./KittensGameCN_files/theme_dark.css" type="text/css">
+		<link rel="stylesheet" href="./KittensGameCN_files/theme_grassy.css" type="text/css">
+
+		<script type="text/javascript">
+			dojo.addOnLoad(function(){
+				gamePage = new com.nuclearunicorn.game.ui.GamePage("gameContainerId");
+				
+				gamePage.nerfs = 5;
+				gamePage.load();
+
+				gamePage.updateKarma();
+
+				gamePage.render()
+				gamePage.start();
+			});
+
+			function dev(){
+				if (window.location.protocol != "file:" || !confirm("您即将进入开发人员模式,继续?")) {
+					return;
+				} else {
+					$("#dev_boostCalendar").html("&gt;&gt;&gt;");
+					$("#devPanelCheats").show();
+				}
+			}
+
+			function dev_boostCalendar(){
+				gamePage.calendar.dayPerTick = 3;
+			}
+
+			function wipe(){
+				if (confirm("存档将被删除, 是否确认?")){
+					gamePage.wipe();
+				}
+			}
+			// we don't need no css, let the dynamic height be. be, dynamic height, be.
+			function resetGameLogHeight(){
+				$("#devPanel").outerHeight($("#footerLinks").position().top - $("#gameLog").offset().top);
+			}
+			$(resetGameLogHeight);
+			$(window).resize(resetGameLogHeight);
+		</script>
+
+		<title>喵游记 - 黑历史增加中……</title>
+	</head>
+
+
+
+	<body>
+		<div id="gamePageContainer" class="">
+
+			<div id="topBar">
+				<div style="padding-left: 10px;">
+					喵游记 <span style="font-size: small;">
+					<a href="http://bloodrizer.ru/">制作：bloodrizer</a> 
+					<a href="http://www.u77.com/">翻译：Max，士郎子，深邃如海 程序：士郎子 测试：深邃如海</a> 
+					</span>
+					<!--- a Dark Souls of incremental gaming -->
+
+					<a href="#" style="color: red">
+						<!-- nothing exceptional there so far -->
+					</a>
+
+					<div id="devPanel" style="display:inline-block; padding-left: 15px; font-size: 14;">
+						<div id="devPanelFPS">
+						</div>
+						<div id="devPanelCheats" style="display:none">
+							<a href="#" onclick="gamePage.science.unlockAll();">全部技术</a>
+							<a href="#" onclick="gamePage.resPool.maxAll();">全部资源</a>
+						</div>
+					</div>
+
+				</div>
+				<div id="headerLinks" style="position: absolute; top: 0; right: 10px; float: right;">
+
+					<span id="sorrowTooltip" style="padding-right: 15px; font-size: 12px;" title="Black liquid sorrow"></span>
+					<span id="autosaveTooltip" style="padding-right: 15px; font-size: 12px; opacity: 0;">自动保存...</span>
+
+					<a href="#" onclick="gamePage.save();">保存</a> |
+					<a href="#" onclick="$(&#39;#optionsDiv&#39;).toggle();">选项</a> |
+					<a href="#" onclick="gamePage.reset();">重置</a> |
+					<a href="#" onclick="dev();">#</a> |
+					<a href="#" onclick="wipe();">清空</a> |
+
+					<a href="#" onclick="$(&#39;#changelogDiv&#39;).toggle();">版本 1.0.5.8</a>
+
+				</div>
+			</div>
+			<div id="changelogDiv" class="help" style="display: none; z-index: 9999">
+				<a href="#" onclick="$(&#39;#changelogDiv&#39;).hide();" style="position: absolute; top: 10px; right: 15px;">关闭</a>
+
+				<b>更新日志/新特性:</b>
+				<br>
+				<pre>					版本：1.0.5.8
+						
+
+					大改: 1
+						-中文汉化
+
+					调整: 5
+						-部分功能微调
+
+					增加: 8
+						宇宙时代(前期)
+						村庄标题/村名姓名
+
+
+				</pre>
+				<a href="http://bloodrizer.ru/games/kittens/changelog.txt" target="_blank" style="position: relative; top: -15px;">完整的更新日志</a>
+			</div>
+
+			<div id="game">
+				<div id="tooltip" class="tooltipExt button_tooltip"></div>
+				<div id="leftColumn" class="column" style="vertical-align: top;">
+					<div id="resContainer" style="padding-top: 15px; width: 100% ;">
+					</div>
+
+					<!-- Advisers -->
+
+					<div id="advisorsContainer" style=" padding-top: 10px;">
+					</div>
+
+					<div id="fastHuntContainer" style="padding-left: 5px; visibility: hidden;">
+						<a href="#" onclick="gamePage.huntAll(event);">派出全部猎手</a>
+					</div>
+
+					<div id="craftContainer" style="padding-top: 10px; width: 100%">
+					</div>
+					<div id="u77" style="margin-left:15px;margin-top:15px;"><img src="./KittensGameCN_files/PV.gif" width="177" height="41" longdesc="http://www.u77.com"></div>
+				</div>
+				<div id="midColumn" style="vertical-align: top;" class="column">
+					<div id="gameContainerId" style="border: 1px solid gray;">
+						哎呀,有哪里出错了。似乎游戏不工作,但别担心。<br>
+						<ul>
+							<li>试着按下Ctrl + F5刷新游戏。</li>
+							<li>尝试大约10-15分钟后重新载入游戏。</li>
+							<li>清除游戏缓存后，重新导入游戏存档</li>
+							<li>如果这些都无法成功,请通过下面的链接“Reddit”联系我。</li>
+						</ul>
+					</div>
+				</div>
+				<div id="rightColumn" class="column" style="vertical-align: top; padding-left: 20px; padding-top: 15px;">
+					<div>
+						<span id="calendarDiv">日历</span>
+						<a id="dev_boostCalendar" href="#" onclick="dev_boostCalendar();" style="text-decoration: none; position: relative; left: 5px;"></a>
+						<a id="pauseBtn" style="font-size: 12px; float: right;" href="#" onclick="gamePage.togglePause();">暂停</a>
+					</div>
+					<div style="padding-top: 10px; border-top: 1px solid gray;">
+						你是一只在猫薄荷森林的小猫。
+					</div>
+					<div id="iceage" style="display: none;">
+						<span>森林覆盖着雪。</span>
+					</div>
+					<div id="clearLog">
+						<a id="clearLogHref" href="#" onclick="gamePage.clearLog();">清除日志</a>
+					</div>
+					<div id="gameLog" style="overflow-y: scroll; padding-top: 15px;">
+						<!-- Log goes there -->
+					</div>
+				</div>
+			</div>
+
+			<div id="helpDiv" style="display: none" class="help">
+				<a href="#" onclick="$(&#39;#helpDiv&#39;).hide();" style="position: absolute; top: 10px; right: 15px;">关闭</a>
+				<ul>
+					<li>Q: 游戏不能运行！</li>
+					<li>A: 请尝试按 Ctrl+F5. 清除游戏缓存并重新导入存档可能会帮到你</li>
+					<br>
+					<li>Q: 木材很没用，它令精炼猫薄荷增效!【公式如下】
+					</li>
+					<li>A: 猫薄荷/木材的结构是非常复杂的</li>
+					<br>
+					<li>Q: 独角兽用来做什么?</li>
+					<li>A: 这是个秘密</li>
+					<br>
+					<li>Q: 这个游戏太慢了!</li>
+					<li>A: 会变好的. 努力去开发自己的创造力，并给自己制定个目标</li>
+					<li>D: 你可以尝试自己修改参数</li>
+				</ul>
+			</div>
+
+			<div id="creditsDiv" style="display: none" class="help">
+				<a href="#" onclick="$(&#39;#creditsDiv&#39;).hide();" style="position: absolute; top: 10px; right: 15px;">关闭</a>
+
+				草绿色主题制作：<a href="http://www.reddit.com/user/shrx">shrx</a>
+				<br>
+				代码贡献:
+				<br>
+				<ul>
+					<li><a href="http://www.reddit.com/user/Zusias">Zusias</a></li>
+					<li>Duke</li>
+					<li><a href="http://www.reddit.com/user/xranti">xranti</a>
+				</li></ul>
+				<br>
+				<br>
+
+				感谢 4chan /igg/ 你是个好人，但是我们不合适
+				<br>
+				感谢 /r/kittensgame社区的反馈和测试
+				<br>
+				<br>
+
+				最感谢的是 <a href="http://www.reddit.com/user/ainil">ainil</a> 在漫长的几个月的支持和反馈.
+				<br>
+				<br>
+				最后,我永远都感激Waraiko.
+				<br>
+
+			</div>
+
+
+			<div id="optionsDiv" style="display: none" class="help">
+				<a href="#" onclick="$(&#39;#optionsDiv&#39;).hide();" style="position: absolute; top: 10px; right: 15px;">关闭</a>
+
+				模板颜色: <!-- <input id="schemeToggle" type="checkbox" onclick="gamePage.toggleScheme()"> Inverted <br><br><br> -->
+				<select id="schemeToggle" onchange="gamePage.toggleScheme()">
+					<option value="">经典</option>
+					<option value="dark">反色</option>
+					<option value="grassy">草绿色</option>
+				</select>
+				<br>
+				<br>
+
+				<input id="workersToggle" type="checkbox" onclick="gamePage.useWorkers = $(&#39;#workersToggle&#39;)[0].checked;">
+					启用网页线程（游戏可以在最小化时或背景选项卡中正常工作，可能会导致性能问题）
+				<br>
+
+				<input id="forceHighPrecision" type="checkbox" onclick="gamePage.forceHighPrecision = $(&#39;#forceHighPrecision&#39;)[0].checked;">
+					使用更精确的资源数值显示
+				<br>
+
+				<input id="usePerSecondValues" type="checkbox" onclick="gamePage.opts.usePerSecondValues = $(&#39;#usePerSecondValues&#39;)[0].checked;">
+					显示每秒产出数值 (否则显示每次产出数值)
+				<br>
+				<input id="usePercentageResourceValues" type="checkbox" onclick="gamePage.opts.usePercentageResourceValues = $(&#39;#usePercentageResourceValues&#39;)[0].checked;">
+					使用百分比资源生产数值
+				<br>
+				<input id="highlightUnavailable" type="checkbox" onclick="gamePage.opts.highlightUnavailable = $(&#39;#highlightUnavailable&#39;)[0].checked;">
+					突出建筑物的有限的存储空间
+				<br>
+				<input id="hideSell" type="checkbox" onclick="gamePage.opts.hideSell = $(&#39;#hideSell&#39;)[0].checked;">
+					隐藏“出售”按钮
+				<br>
+
+				<br>
+				<br>
+
+				<input type="button" value="导出" onclick="gamePage.saveExport();">
+				<br>
+				<input type="button" value="导入" onclick="$(&#39;#importData&#39;).val(&#39;&#39;); $(&#39;#importDiv&#39;).show();" style="margin-top: 10px;">
+				<br>
+			</div>
+
+			<div id="exportDiv" style="display: none" class="help">
+				<span>请把这段数据保存在安全地点。</span>
+				<br>
+				<textarea id="exportData" style="width: 550px; height: 250px;"></textarea>
+				<br>
+				<input type="button" value="确认" onclick="$(&#39;#exportDiv&#39;).hide();" style="margin-top: 10px;">
+			</div>
+
+			<div id="importDiv" style="display: none" class="help">
+				<span>警告！ 导入数据将会覆盖您的存档。</span>
+				<br>
+				<textarea id="importData" style="width: 550px; height: 250px;"></textarea>
+				<br>
+				<input type="button" value="确认" onclick="gamePage.saveImport(); $(&#39;#importDiv&#39;).hide();" style="margin-top: 10px;">
+				<input type="button" value="取消" onclick="$(&#39;#importDiv&#39;).hide();" style="margin-top: 10px;">
+			</div>
+
+			<div id="footerLinks">
+				<a href="http://www.u77.com/">U77总有好游戏</a> |
+				<a href="http://www.reddit.com/r/kittensgame/">红迪新闻网</a> |
+				<a href="http://bloodrizer.ru/games/kittens/wiki/">wiki</a> |
+				<a href="http://kittensgame.tumblr.com/">汤博乐博客</a> |
+				<a href="#" onclick="$(&#39;#helpDiv&#39;).toggle();">帮助</a> |
+				<a href="#" onclick="$(&#39;#creditsDiv&#39;).toggle();">制作组</a> |
+				<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3H8PQGAN8V8YU">捐赠</a> |
+			</div>
+		</div>
+</body>
+</html>
